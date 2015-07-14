@@ -8,6 +8,7 @@ app.use(express.static(path.join(__dirname, 'client')));
 
 
 app.set('port', process.env.PORT || 8000);
-http.createServer(app).listen(app.get('port'), function(){
+app.set('host', process.env.LISTEN_HOST || null);
+http.createServer(app).listen(app.get('port'), app.get('host'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });
