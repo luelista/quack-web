@@ -1,0 +1,23 @@
+{
+  "name": "bonfire-web",
+  "version": "0.0.0",
+  "authors": [
+    "Max Weller <git@max-weller.de>"
+  ],
+  "description": "Jabber web client",
+  "main": "index.html",
+  "license": "GPL",
+  "homepage": "https://bonfire.projects.teamwiki.net",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "~1.4.2",
+    "angular-material": "~0.10.0",
+    "strophejs": "~1.2.2"
+  }
+}
