@@ -1,3 +1,52 @@
 
 
-Details regarding {{jid}}
+<md-toolbar class=" md-accent ">
+  <div class="md-toolbar-tools">
+    <md-button class="md-icon-button" hide-gt-sm aria-label="Sidebar" ng-click="toggleSideBar()">
+      <md-icon>menu</md-icon>
+    </md-button>
+    <h2>
+      <span>{{jid}}</span>
+    </h2>
+    <span flex></span>
+    <md-button class="md-icon-button" aria-label="More" ng-click="rename()">
+      <md-icon>edit</md-icon>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="Favorite" ng-click="goOnline()" ng-hide="chat.online">
+      <md-icon>chat_bubble_outline</md-icon>
+      <md-tooltip>Join This Conference</md-tooltip>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="Favorite" ng-click="goOffline()" ng-show="chat.online">
+      <md-icon>chat</md-icon>
+      <md-tooltip>Leave Conference</md-tooltip>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="More" ng-click="delete()">
+      <md-icon>delete</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<div flex layout="row">
+  <md-content scroll-down flex>
+    <md-list layout-padding class="messages">
+      <md-list-item class="md-3-line" ng-repeat="message in chat.messages">
+          <img ng-src="/images/person.jpg" class="md-avatar" alt="{{message.from}}">
+          <div class="md-list-item-text" ng-if="message.body">
+            <span style="float:right">{{message.dateTime}}</span>
+            <h3>{{message.from.resource}}</h3>
+            <p>
+              {{message.body}}
+            </p>
+          </div>
+          <div class="md-list-item-text" ng-if="message.subject">
+            <p>*** {{message.from.resource}} set the subject to: <b>{{message.subject}}</b></p>
+          </div>
+          
+      </md-list-item>
+    </md-list>
+  </md-content>
+</div>
+
+<div class="send-message">
+    <textarea ng-model="chat.composing" chat-write-message on-send-message="sendMessage()"></textarea>
+</div>

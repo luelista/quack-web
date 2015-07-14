@@ -41,14 +41,16 @@
 
     <md-content flex role="navigation">
       <ul class="side-menu">
-        <li><a ng-href="#/welcome" ng-class="{active:currentPage=='/welcome'}">hallo</a></li>
+        <li><a ng-href="#/welcome" ng-class="{active:currentPage=='/welcome'}"><md-icon>home</md-icon>  Welcome Page</a></li>
         <li><h2 class="menu-heading md-subhead">Conversations</h2></li>
         <li ng-repeat="conv in conversations">
           <a ng-href="#/chat/{{conv.jid.bare | escape}}" ng-class="{active:conv.currentViewed}">
-            <md-icon >chat{{conv.autoJoin ? '' : '_bubble_outline'}}</md-icon>
-            {{conv.jid.bare}}</a>
+            <md-icon ng-style="{color:conv.unread>0?'red':''}">chat{{conv.online ? '' : '_bubble_outline'}}</md-icon>
+            <span>{{conv.subject ? conv.subject : conv.jid.bare}}</span></a>
         </li>
       </ul>
     </md-content>
+    
+    
 </div>
   

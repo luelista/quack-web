@@ -1,22 +1,22 @@
 
-<div layout="row" layout-align-gt-sm="center center" flex>
-  <div flex style="max-width: 480px;" ><!--class="md-whiteframe-z2"-->
+<div layout-gt-sm="row" layout-align-gt-sm="center center" flex class="login-wallpaper">
+  <div flex class="login-form md-whiteframe-z5">
     <!--<md-toolbar>
       <div class="md-toolbar-tools">
         <h2>Login</h2>
       </div>
     </md-toolbar>-->
-    <md-content layout-padding>
-      <md-input-container style="padding-bottom: 8px">
+    <form layout-padding ng-submit="login()">
+      <md-input-container style="padding-bottom: 19px">
         <label>Jabber ID</label>
-        <input ng-model="jabber.jid" required type="email">
+        <input ng-model="jabber.jid" required type="email" ng-focus>
       </md-input-container>
       <md-input-container style="padding-bottom: 26px">
         <label>Password</label>
         <input ng-model="jabber.password" required type="password" >
       </md-input-container>
-      <md-button style="padding:2px 20px" class="md-raised md-primary" ng-click="login()"><md-icon >check</md-icon> Sign in</md-button>
-    </md-content>
+      <md-button style="padding:2px 20px" class="md-raised md-primary"><md-icon >check</md-icon> Sign in</md-button>
+    </form>
   </div>
 </div>
 

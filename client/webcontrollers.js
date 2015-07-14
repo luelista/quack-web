@@ -20,10 +20,9 @@ angular.module( 'bonfireControllers', [  ] )
     });
     function update() {
       var loc = $scope.currentPage = $location.path();
-      console.log($location);
-      $scope.conversations = Jabber.conferences.map(function(c) {
-        c.currentViewed =  ("/chat/"+c.jid.bare == loc);
-        return c;
+      $scope.conversations = Jabber.conferences;
+      angular.forEach($scope.conversations, function(item, id) {
+        item.currentViewed = ("/chat/"+id == loc);
       });
     }
     
@@ -31,6 +30,7 @@ angular.module( 'bonfireControllers', [  ] )
       $mdDialog.show($mdDialog.confirm().content("Are you sure?").ok("Logout").cancel("No"))
       .then(function() {
         Jabber.disconnect();
+        window.localStorage.cred_password = "";
         $location.path("/login");
       });
     }
@@ -44,7 +44,12 @@ angular.module( 'bonfireControllers', [  ] )
     $scope.login = function() {
       Jabber.connect()
       .then(function() {
-        $location.path("/welcome");
+        var s = $location.search();
+        if (s.back) {
+          $location.path(s.back).search({});
+        } else {
+          $location.path("/welcome");
+        }
       }, function(error) {
         $mdToast.showSimple(error);
         
@@ -60,15 +65,107 @@ angular.module( 'bonfireControllers', [  ] )
   })
   
 .controller("WelcomeCtrl",
-  function($scope) {
+  function($scope, Jabber) {
+    $scope.contacts = Jabber.contacts;
     
+    $scope.joinJid = "";
+    
+    $scope.joinRoom = function() {
+      var jid = new XMPP.JID($scope.joinJid);
+      var room = new Jabber.Conversation({ jid: jid, autoJoin: true, name: jid.local });
+      Jabber.conferences[jid.bare] = room;
+      Jabber.joinRoom(room);
+    };
   })
   
 .controller("ChatCtrl",
-  function($scope, $routeParams) {
-    $scope.jid = $routeParams.chatId;
-  })
+  function($scope, $routeParams, Jabber, $mdToast) {
+    var id = $scope.jid = $routeParams.chatId;
+    $scope.chat = Jabber.conferences[id];
+    if (!$scope.chat) {
+      $mdToast.showSimple("Unknown conference"); return;
+    }
+    $scope.chat.composing = $scope.chat.composing || "";
+    $scope.chat.lastRead = $scope.chat.lastReceived;
+    $scope.chat.persist();
     
+    $scope.sendMessage = function() {
+      console.log($scope.chat.composing);
+      Jabber.client.sendMessage({
+        body: $scope.chat.composing,
+        to: $scope.chat.jid,
+        type: "groupchat"
+      });
+      $scope.chat.composing = "";
+    }
+    $scope.$on("sendmessage", function() {
+      $scope.sendMessage();
+    });
+    
+    $scope.goOnline = function() {
+      Jabber.joinRoom($scope.chat);
+      $scope.chat.autoJoin = true;
+      $scope.chat.bookmark();
+    }
+    $scope.goOffline = function() {
+      $scope.chat.part();
+      $scope.chat.autoJoin = false;
+      $scope.chat.bookmark();
+    }
+    $scope.delete = function() {
+      $scope.chat.unbookmark();
+    }
+    $scope.rename = function() {
+      
+    }
+  })
+
+.directive('chatWriteMessage', ['$interval', 'dateFilter', function($interval, dateFilter) {
+
+  function link(scope, element, attrs) {
+    element.on("keyup", function(e) {
+      if (e.keyCode == 13 && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        scope.$apply(function() {
+          scope.$emit("sendmessage");
+        });
+      }
+    });
+    element.on("keydown", function(e) {
+      if (e.keyCode == 13 && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  return {
+    //scope: { onSendMessage: '&' },
+    link: link
+  };
+}])
+
+// maybe replace with https://github.com/Luegg/angularjs-scroll-glue/blob/master/src/scrollglue.js#L62
+.directive('scrollDown', ['$interval',function($interval) {
+  return {
+    link: function link(scope, $element, attrs) {
+      var element = $element[0];
+      function scroll() {
+        //console.log("scroll",element);
+        element.scrollTop = element.scrollHeight;
+      }
+      scope.$watch(function() {
+        //if (element.scrollHeight - element.scrollTop < 400) 
+        scroll();
+          
+        //else
+        //  console.log("scroll-down: not scrolling down because too far scrolled up");
+      });
+      $interval(scroll, 1, 1);
+    }
+  };
+}])
+
+
 ;
 
 

@@ -2,22 +2,39 @@
 // Include app dependency on ngMaterial
 
 angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', 'jabberService' ] )
+.config(function($mdThemingProvider) {
+  $mdThemingProvider.theme('default')
+    .primaryPalette('indigo')
+    .accentPalette('teal');
+})
+
 .filter('escape', function() {
   return window.encodeURIComponent;
 })
 
 .run(
-  function($rootScope, $location, $routeParams, Jabber) {
+  function($rootScope, $location, $routeParams, Jabber, $mdToast, $mdSidenav) {
     $rootScope.$on('$routeChangeSuccess', function(event, current) {
-      if ($location.path() == "/login") {
+      if ($location.path().indexOf("/login") === 0) {
         $rootScope.showSideBar = false;
       } else {
         $rootScope.showSideBar = true;
         if (Jabber.connected == false) {
-            $location.path("/login");
+          var old = $location.path();
+          $location.path("/login").search({back: old});
         }
       }
     });
+    
+    $rootScope.$on('jabber.message', function(event, msg) {
+      console.log("Message: ",msg.delay?"delayed":"NEW",msg);
+      if (!msg.delay && msg.body)
+        $mdToast.showSimple(""+msg.from+": "+msg.body);
+    });
+    
+    $rootScope.toggleSideBar = function() {
+      $mdSidenav('left').open()
+    }
   })
 
 .config(['$routeProvider',
