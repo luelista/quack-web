@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="bonfireApp">
+<head>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="/bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body layout="row"><!-- ng-cloak-->
+    
+    <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
+                md-component-id="left"
+                md-is-locked-open="$mdMedia('gt-sm')"
+                ng-if="showSideBar"
+                ng-include="'./partials/sidebar.html'">
+  
+    </md-sidenav>
+  
+    <div layout="column" tabIndex="-1" role="main" flex ng-view></div>
+
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-aria/angular-aria.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/bower_components/angular-material/angular-material.js"></script>
+    <script src="/bower_components/angular-route/angular-route.js"></script>
+    <script src="/stanzaio.bundle.js"></script>
+    <script src="/webapp.js"></script>
+    <script src="/webcontrollers.js"></script>
+    <script src="/jabberservice.js"></script>
+    <script>
+
+    </script>
+
+</body>
+</html>
