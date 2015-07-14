@@ -1,16 +1,40 @@
 
 html,body {overflow:hidden!important;}
-.nav-header { background: #337799; padding: 50px 0 15px 0; color: white; }
+.nav-header { background: #337799; padding: 50px 0 15px 0; color: white; background:#1A237E; }
 .nav-header .user-id { padding: 14px 0 10px 20px; font-size: 11pt; font-weight: bold; }
 .nav-header button md-icon { color: white; }
 
-.sidebar md-content { background: #5599aa; }
+.sidebar md-content { background: #5599aa; background:#5C6BC0; }
 
 ul.side-menu, ul.side-menu li { margin: 0; padding: 0; }
 ul.side-menu { margin-top: 10px; }
-ul.side-menu li h2 { padding: 8px 20px; margin: 10px 0 0 0; color: #dbfaff; font-size: 10pt; font-weight: bold; text-transform: uppercase; }
-ul.side-menu li a { padding: 7px 20px; display: block; text-decoration: none; color: #f0fdff; font-size: 10pt; }
+ul.side-menu li h2 { padding: 8px 20px; margin: 10px 0 0 0; color: #C5CAE9; font-size: 10pt; font-weight: bold; text-transform: uppercase; }
+ul.side-menu li a { 
+  padding: 7px 20px; display: block; text-decoration: none; 
+  color: #E8EAF6; font-size: 10pt; 
+  /* Ellipsize if text is to long */
+  text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+ul.side-menu a:hover {background:#7986CB;}
 ul.side-menu li a.active { background: white; color: black; }
 ul.side-menu li a md-icon { margin-right: 5px; font-size: 21px; height: 21px; color: rgba(255,255,255,0.6); }
 ul.side-menu li a.active md-icon { color: rgba(0,0,0,0.6); }
 
+.send-message md-input-container { padding-bottom: 2px; }
+.send-message textarea { width: 100%; }
+.send-message { background-color: #fafafa; border-top: 1px solid #e0e0e0; min-height: 50px }
+
+.messages { word-wrap: break-word; }
+
+
+.login-form { max-width: 400px; margin-bottom: 50px; }
+.login-form form { padding: 20px 30px 30px; background: white; }
+.login-wallpaper { background-position: center; background-size: cover; }
+
+@media screen and (min-width: 600px) {
+  .login-wallpaper { background-image: url(/images/login.jpg); }
+}
+@media screen and (max-width: 599px) {
+  .login-form { margin: 20px auto; }
+  .login-wallpaper { padding: 20px; background-image: url(/images/loginsm.jpg); }
+}

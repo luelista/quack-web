@@ -4,9 +4,9 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="/bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="/style.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/images/material/font.css" rel="stylesheet">
 </head>
-<body layout="row"><!-- ng-cloak-->
+<body layout="row" ng-cloak><!-- -->
     
     <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
                 md-component-id="left"
@@ -28,7 +28,10 @@
     <script src="/webcontrollers.js"></script>
     <script src="/jabberservice.js"></script>
     <script>
-
+    //for debugging
+    window.addEventListener("load",function(){
+window.DD=angular.element(document.body).injector()
+},false);
     </script>
 
 </body>
