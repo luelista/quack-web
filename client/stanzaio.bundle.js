@@ -27271,18 +27271,18 @@ exports['default'] = function (JXT) {
 
                     var hist = Utils.createElement(_xmppConstants.Namespace.MUC, 'history', _xmppConstants.Namespace.MUC);
                     this.xml.appendChild(hist);
-
+                    
                     if (opts.maxchars) {
-                        hist.setAttribute('' + opts.maxchars);
+                      hist.setAttribute('maxchars', '' + opts.maxchars);
                     }
                     if (opts.maxstanzas) {
-                        hist.setAttribute('' + opts.maxstanzas);
+                      hist.setAttribute('maxstanzas', '' + opts.maxstanzas);
                     }
                     if (opts.seconds) {
-                        hist.setAttribute('' + opts.seconds);
+                      hist.setAttribute('seconds', '' + opts.seconds);
                     }
                     if (opts.since) {
-                        hist.setAttribute(opts.since.toISOString());
+                      hist.setAttribute('since', opts.since.toISOString());
                     }
                 }
             }
