@@ -26,6 +26,15 @@
   </div>
 </md-toolbar>
 
+<div style="height:50px" flex>
+  Occupants
+  <md-chips>
+    <md-chip ng-repeat="(nick,occupant) in chat.occupants" title="{{occupant.jid}}">
+      {{occupant.nick}}
+    </md-chip>
+  </md-chips>
+</div>
+
 <div flex layout="row">
   <md-content scroll-down flex>
     <md-list layout-padding class="messages">
