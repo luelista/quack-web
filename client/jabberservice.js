@@ -21,6 +21,8 @@ angular.module( 'jabberService', [   ] )
     //  svc.getAvatar(
     }
     
+    
+    // class Conversation
     function Conversation(obj) {
       this.jid = null;
       this.subject = null;
@@ -29,9 +31,9 @@ angular.module( 'jabberService', [   ] )
       this.codes = [];
       this.role = ""; this.affiliation = "";
       this.messages = [];
+      this.occupants = {};
       this.lastRead = new Date(0);
       this.lastReceived = new Date(0);
-      console.log(obj);
       for(var k in obj) this[k] = obj[k];
       try {
         var stored = JSON.parse(window.localStorage["conversation_info_" + this.jid.bare]);
@@ -100,6 +102,18 @@ angular.module( 'jabberService', [   ] )
       });
     }
     svc.Conversation = Conversation;
+    // end class Conversation
+    
+    // class Occupant
+    function Occupant(nick, obj) {
+      this.nick = nick;
+      this.role = null;
+      this.affiliation = null;
+      this.jid = null;
+      for(var k in obj) this[k] = obj[k];
+    }
+    svc.Occupant = Occupant;
+    // end class Occupant
     
     
     svc.connect = function() {
@@ -183,15 +197,20 @@ angular.module( 'jabberService', [   ] )
           if (msg.type == "groupchat") {
             var id = msg.from.bare, chat;
             if (chat = svc.conferences[id]) {
-              if (msg.tstamp && msg.tstamp.tstamp && msg.tstamp.tstamp instanceof Date)
-                msg.dateTime = msg.tstamp.tstamp;
-              else if (msg.delay && msg.delay.stamp && msg.delay.stamp instanceof Date)
-                msg.dateTime = msg.delay.stamp;
-              else
-                msg.dateTime = new Date();
-              chat.lastReceived = msg.dateTime;
-              chat.messages.push(msg);
-              chat.persist();
+              if (msg.chatState) {
+                
+              }
+              if (msg.body || msg.subject) {
+                if (msg.tstamp && msg.tstamp.tstamp && msg.tstamp.tstamp instanceof Date)
+                  msg.dateTime = msg.tstamp.tstamp;
+                else if (msg.delay && msg.delay.stamp && msg.delay.stamp instanceof Date)
+                  msg.dateTime = msg.delay.stamp;
+                else
+                  msg.dateTime = new Date();
+                chat.lastReceived = msg.dateTime;
+                chat.messages.push(msg);
+                chat.persist();
+              }
             }
           }
         });
@@ -202,34 +221,49 @@ angular.module( 'jabberService', [   ] )
           console.log("avatar result",avatar.jid.bare,avatar.avatars[0].id,x,y,z);
         });
       });
+      function onMucEvent(item, callback) {
+        var id = item.from.bare, chat;
+        if (chat = svc.conferences[id]) {
+          $rootScope.$apply(function() {
+            callback(id, chat);
+          });
+        }
+      }
       client.on('muc:subject', function(msg) {
-        $rootScope.$apply(function() {
-          var id = msg.from.bare, chat;
-          if (chat = svc.conferences[id]) {
+        onMucEvent(msg, function(id, chat) {
             chat.subject = msg.subject;
             $rootScope.$broadcast('jabber.conversationsChange');
-          }
         });
       });
       client.on('muc:join', function(pres) {
-        $rootScope.$apply(function() {
-          var id = pres.from.bare, chat;
-          if (chat = svc.conferences[id]) {
+        onMucEvent(pres, function(id, chat) {
             console.log("muc join", id);
             chat.nick = pres.from.resource;
             chat.online = true;
             chat.codes = pres.muc.codes;
             chat.role = pres.muc.role; chat.affiliation = pres.muc.affiliation;
-          }
         });
       });
       client.on('muc:leave', function(pres) {
-        $rootScope.$apply(function() {
-          var id = pres.from.bare, chat;
-          if (chat = svc.conferences[id]) {
+        onMucEvent(pres, function(id, chat) {
             console.log("muc left", id);
             chat.online = false;
-          }
+        });
+      });
+      client.on('muc:available', function(pres) {
+        onMucEvent(pres, function(id, chat) {
+          var nick = pres.from.resource;
+          chat.occupants[nick] = new Occupant(nick, {
+            jid: pres.muc.jid,
+            affiliation: pres.muc.affiliation,
+            role: pres.muc.role
+          });
+        });
+      });
+      client.on('muc:unavailable', function(pres) {
+        onMucEvent(pres, function(id, chat) {
+          var nick = pres.from.resource;
+          delete chat.occupants[nick];
         });
       });
 
