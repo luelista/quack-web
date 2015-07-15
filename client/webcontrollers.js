@@ -82,6 +82,7 @@ angular.module( 'bonfireControllers', [  ] )
     if (!$scope.chat) {
       $mdToast.showSimple("Unknown conference"); return;
     }
+    $scope.skipItemCount = $scope.chat.messages.length - 75;
     $scope.chat.composing = $scope.chat.composing || "";
     $scope.chat.lastRead = $scope.chat.lastReceived;
     $scope.chat.persist();
@@ -97,6 +98,9 @@ angular.module( 'bonfireControllers', [  ] )
     }
     $scope.$on("sendmessage", function() {
       $scope.sendMessage();
+    });
+    $scope.$on("reachedtop", function() {
+      $scope.skipItemCount = Math.max(0, $scope.skipItemCount - 25);
     });
 
     $scope.goOnline = function() {
@@ -151,13 +155,22 @@ angular.module( 'bonfireControllers', [  ] )
         element.scrollTop = element.scrollHeight;
       }
       scope.$watch(function() {
-        //if (element.scrollHeight - element.scrollTop < 400)
-        scroll();
-
+        //console.log(element.scrollHeight, element.scrollTop)
+        if (element.scrollHeight - element.scrollTop - element.clientHeight < 400)
+          scroll();
+        
         //else
         //  console.log("scroll-down: not scrolling down because too far scrolled up");
       });
       $interval(scroll, 1, 1);
+      $element.on("scroll", function() {
+        if (element.scrollTop == 0) {
+          scope.$apply(function() {
+            scope.$emit("reachedtop");
+            element.scrollTop = 20;
+          });
+        }
+      });
     }
   };
 }])

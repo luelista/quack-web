@@ -40,7 +40,7 @@
 <div flex layout="row">
   <md-content scroll-down flex>
     <md-list layout-padding class="messages">
-      <md-list-item class="md-3-line" ng-repeat="message in chat.messages">
+      <md-list-item class="md-3-line" ng-repeat="message in chat.messages" ng-if="$index > skipItemCount">
           <div class="md-avatar" style="background-color: {{message.from.resource|pastel_colour}}" title="{{message.from}}">{{message.from.resource|first_letter}}</div>
           <div class="md-list-item-text" ng-if="message.body">
             <span class="date">{{message.dateTime | date: "HH:mm:ss"}}</span>
