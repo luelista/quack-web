@@ -26,20 +26,22 @@
   </div>
 </md-toolbar>
 
-<div style="height:50px" flex>
-  Occupants
-  <md-chips>
+<div class="occupants" flex=0>
+  <span ng-repeat="(nick,occupant) in chat.occupants" title="{{occupant.jid.toString()}}">
+    {{occupant.nick}}
+  </span>
+  <!--<md-chips>
     <md-chip ng-repeat="(nick,occupant) in chat.occupants" title="{{occupant.jid}}">
       {{occupant.nick}}
     </md-chip>
-  </md-chips>
+  </md-chips>  -->
 </div>
 
 <div flex layout="row">
   <md-content scroll-down flex>
     <md-list layout-padding class="messages">
       <md-list-item class="md-3-line" ng-repeat="message in chat.messages">
-          <img ng-src="/images/person.jpg" class="md-avatar" alt="{{message.from}}">
+          <div class="md-avatar" style="background-color: {{message.from.resource|pastel_colour}}" title="{{message.from}}">{{message.from.resource|first_letter}}</div>
           <div class="md-list-item-text" ng-if="message.body">
             <span class="date">{{message.dateTime | date: "HH:mm:ss"}}</span>
             <h3>{{message.from.resource}}</h3>

@@ -1,10 +1,10 @@
 
 
-angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', 'jabberService' ] )
+angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', 'jabberService', 'colorHelper' ] )
 .config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default')
-    .primaryPalette('indigo')
-    .accentPalette('teal');
+    .primaryPalette('teal')
+    .accentPalette('indigo');
 })
 
 .filter('escape', function() {
@@ -24,13 +24,13 @@ angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', '
         }
       }
     });
-    
+
     $rootScope.$on('jabber.message', function(event, msg) {
       console.log("Message: ",msg.delay?"delayed":"NEW",msg);
       if (!msg.delay && msg.body)
         $mdToast.showSimple(""+msg.from+": "+msg.body);
     });
-    
+
     $rootScope.toggleSideBar = function() {
       $mdSidenav('left').open()
     }
@@ -57,10 +57,7 @@ angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', '
   }])
 
 
-.controller("YourController", 
+.controller("YourController",
   function() {
-    
+
   } );
-
-
-

@@ -21,7 +21,7 @@ angular.module( 'bonfireControllers', [  ] )
         item.currentViewed = ("/chat/"+id == loc);
       });
     }
-    
+
     $scope.doLogout = function() {
       $mdDialog.show($mdDialog.confirm().content("Are you sure?").ok("Logout").cancel("No"))
       .then(function() {
@@ -31,12 +31,12 @@ angular.module( 'bonfireControllers', [  ] )
       });
     }
   })
-  
+
 .controller("LoginCtrl",
   function($scope, $location, $mdToast, Jabber) {
     $scope.jabber = Jabber;
-    
-    
+
+
     $scope.login = function() {
       Jabber.connect()
       .then(function() {
@@ -48,32 +48,33 @@ angular.module( 'bonfireControllers', [  ] )
         }
       }, function(error) {
         $mdToast.showSimple(error);
-        
+
       }, function(notice) {
         $mdToast.showSimple(notice);
-        
+
       });
     }
-    
+
     if (Jabber.jid && Jabber.password && window.localStorage.login) $scope.login();
-    
-    
+
+
   })
-  
+
 .controller("WelcomeCtrl",
   function($scope, Jabber) {
     $scope.contacts = Jabber.contacts;
-    
+
     $scope.joinJid = "";
-    
+
     $scope.joinRoom = function() {
       var jid = new XMPP.JID($scope.joinJid);
       var room = new Jabber.Conversation({ jid: jid, autoJoin: true, name: jid.local });
       Jabber.conferences[jid.bare] = room;
       Jabber.joinRoom(room);
+      room.bookmark();
     };
   })
-  
+
 .controller("ChatCtrl",
   function($scope, $routeParams, Jabber, $mdToast) {
     var id = $scope.jid = $routeParams.chatId;
@@ -84,7 +85,7 @@ angular.module( 'bonfireControllers', [  ] )
     $scope.chat.composing = $scope.chat.composing || "";
     $scope.chat.lastRead = $scope.chat.lastReceived;
     $scope.chat.persist();
-    
+
     $scope.sendMessage = function() {
       console.log($scope.chat.composing);
       Jabber.client.sendMessage({
@@ -97,7 +98,7 @@ angular.module( 'bonfireControllers', [  ] )
     $scope.$on("sendmessage", function() {
       $scope.sendMessage();
     });
-    
+
     $scope.goOnline = function() {
       Jabber.joinRoom($scope.chat);
       $scope.chat.autoJoin = true;
@@ -112,7 +113,7 @@ angular.module( 'bonfireControllers', [  ] )
       $scope.chat.unbookmark();
     }
     $scope.rename = function() {
-      
+
     }
   })
 
@@ -150,9 +151,9 @@ angular.module( 'bonfireControllers', [  ] )
         element.scrollTop = element.scrollHeight;
       }
       scope.$watch(function() {
-        //if (element.scrollHeight - element.scrollTop < 400) 
+        //if (element.scrollHeight - element.scrollTop < 400)
         scroll();
-          
+
         //else
         //  console.log("scroll-down: not scrolling down because too far scrolled up");
       });
@@ -163,6 +164,3 @@ angular.module( 'bonfireControllers', [  ] )
 
 
 ;
-
-
-

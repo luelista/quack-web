@@ -2,7 +2,7 @@
 // Include app dependency on ngMaterial
 
 angular.module( 'jabberService', [   ] )
-.factory("Jabber", 
+.factory("Jabber",
   function($q, $rootScope) {
     var svc = {
       jid: null,
@@ -13,15 +13,15 @@ angular.module( 'jabberService', [   ] )
       contacts: [],
       avatars: {}
     };
-    
+
     if (window.localStorage.cred_jid) svc.jid = window.localStorage.cred_jid;
     if (window.localStorage.cred_password) svc.password = window.localStorage.cred_password;
-    
+
     svc.requestAvatar = function() {
     //  svc.getAvatar(
     }
-    
-    
+
+
     // class Conversation
     function Conversation(obj) {
       this.jid = null;
@@ -41,7 +41,7 @@ angular.module( 'jabberService', [   ] )
           for(var k in stored) this[k] = stored[k];
           for(var i in stored.msgs) {
             var msg = stored.msgs[i];
-            console.log("message from localStorage:",msg);
+            //console.log("message from localStorage:",msg);
             this.messages.push({
               from: new XMPP.JID(msg.from),
               body: msg.body,
@@ -54,7 +54,7 @@ angular.module( 'jabberService', [   ] )
     }
     Conversation.prototype.toString = function() {
       return this.name ? this.name :
-              this.subject ? this.subject : 
+              this.subject ? this.subject :
               this.jid.bare;
     }
     Conversation.prototype.persist = function() {
@@ -63,7 +63,7 @@ angular.module( 'jabberService', [   ] )
         if(this.messages[i].dateTime <= this.lastRead) break;
         if(this.messages[i].body) this.unread++;
       }
-      window.localStorage["conversation_info_" + this.jid.bare] = 
+      window.localStorage["conversation_info_" + this.jid.bare] =
       JSON.stringify({
         name: this.name,
         lastRead: +this.lastRead,
@@ -79,7 +79,7 @@ angular.module( 'jabberService', [   ] )
         })
       });
     }
-    
+
     Conversation.prototype.unbookmark = function() {
       svc.client.removeBookmark(this.jid, function(ok) {
         console.log(ok);
@@ -103,7 +103,7 @@ angular.module( 'jabberService', [   ] )
     }
     svc.Conversation = Conversation;
     // end class Conversation
-    
+
     // class Occupant
     function Occupant(nick, obj) {
       this.nick = nick;
@@ -114,13 +114,13 @@ angular.module( 'jabberService', [   ] )
     }
     svc.Occupant = Occupant;
     // end class Occupant
-    
-    
+
+
     svc.connect = function() {
       var deferred = $q.defer();
       window.localStorage.cred_jid = svc.jid || "";
       window.localStorage.cred_password = svc.password || "";
-      
+
       if (!svc.jid) {
         deferred.reject("Invalid Jabber ID");
         return deferred.promise;
@@ -134,16 +134,16 @@ angular.module( 'jabberService', [   ] )
         deferred.resolve();
         return deferred.promise;
       }
-      
+
       console.log(svc.jid);
-      
+
       var client = svc.client = XMPP.createClient({
         jid: svc.jid,
         password: svc.password,
         wsURL: XMPP_WEBSOCKET_SERVICE,
         transports: ["old-websocket"]
       });
-      
+
       (function(JXT) {
         var JabberTstamp = JXT.define({
           name: 'tstamp',
@@ -198,7 +198,7 @@ angular.module( 'jabberService', [   ] )
             var id = msg.from.bare, chat;
             if (chat = svc.conferences[id]) {
               if (msg.chatState) {
-                
+
               }
               if (msg.body || msg.subject) {
                 if (msg.tstamp && msg.tstamp.tstamp && msg.tstamp.tstamp instanceof Date)
@@ -296,13 +296,15 @@ angular.module( 'jabberService', [   ] )
       client.connect();
       return deferred.promise;
     }
-    
+
     svc.updateConversations = function() {
       return $q(function(resolve, reject) {
         svc.client.getBookmarks(function(err, resp) {
           var old = svc.conferences;
           svc.conferences = {};
-          resp.privateStorage.bookmarks.conferences.forEach(function(item) {
+          var conferences = resp.privateStorage.bookmarks.conferences;
+          if (!conferences) return;
+          conferences.forEach(function(item) {
             var id = item.jid.bare;
             //console.log(JSON.stringify(item));
             if (old[id]) {
@@ -316,13 +318,13 @@ angular.module( 'jabberService', [   ] )
         });
       });
     }
-    
+
     svc.disconnect = function() {
       if (svc.client) svc.client.disconnect();
       svc.client = null;
       delete window.localStorage.login;
     }
-    
+
     svc.joinRoom = function(room) {
       var historyRequest = { maxstanzas: "250" };
       if (room.lastReceived > 0)
@@ -333,9 +335,6 @@ angular.module( 'jabberService', [   ] )
         }
       });
     }
-    
+
     return svc;
   } );
-
-
-

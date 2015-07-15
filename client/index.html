@@ -5,17 +5,18 @@
     <link rel="stylesheet" href="/bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="/style.css">
     <link href="/images/material/font.css" rel="stylesheet">
+    <title>Bonfire chat</title>
 </head>
 <body layout="row" ng-cloak><!-- -->
-    
+
     <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
                 md-component-id="left"
                 md-is-locked-open="$mdMedia('gt-sm')"
                 ng-if="showSideBar"
                 ng-include="'./partials/sidebar.html'">
-  
+
     </md-sidenav>
-  
+
     <div layout="column" tabIndex="-1" role="main" flex ng-view></div>
 
     <script src="/bower_components/angular/angular.js"></script>
@@ -27,8 +28,9 @@
     <script src="/webapp.js"></script>
     <script src="/webcontrollers.js"></script>
     <script src="/jabberservice.js"></script>
+    <script src="/colors.js"></script>
     <script>
-    
+
     // config
     var XMPP_WEBSOCKET_SERVICE = 'wss://teamwiki.de:5281/xmpp-websocket/';
     var XMPP_ALLOWED_HOSTS = ['teamwiki.de'];
