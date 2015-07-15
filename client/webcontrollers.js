@@ -36,6 +36,9 @@ angular.module( 'bonfireControllers', [  ] )
   function($scope, $location, $mdToast, Jabber) {
     $scope.jabber = Jabber;
 
+    $scope.register = function() {
+      window.open(XMPP_REGISTER_FORM, "regform", "width=450,height=300");
+    }
 
     $scope.login = function() {
       Jabber.connect()
@@ -158,7 +161,7 @@ angular.module( 'bonfireControllers', [  ] )
         //console.log(element.scrollHeight, element.scrollTop)
         if (element.scrollHeight - element.scrollTop - element.clientHeight < 400)
           scroll();
-        
+
         //else
         //  console.log("scroll-down: not scrolling down because too far scrolled up");
       });
