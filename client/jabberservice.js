@@ -37,10 +37,11 @@ angular.module( 'jabberService', [   ] )
         var stored = JSON.parse(window.localStorage["conversation_info_" + this.jid.bare]);
         if (stored && typeof stored == "object") {
           for(var k in stored) this[k] = stored[k];
-          for(var msg in stored.msgs) {
+          for(var i in stored.msgs) {
+            var msg = stored.msgs[i];
+            console.log("message from localStorage:",msg);
             this.messages.push({
               from: new XMPP.JID(msg.from),
-              to: new XMPP.JID(msg.to),
               body: msg.body,
               dateTime: new Date(msg.ts)
             });
@@ -65,10 +66,11 @@ angular.module( 'jabberService', [   ] )
         name: this.name,
         lastRead: +this.lastRead,
         lastReceived: +this.lastReceived,
-        msgs: this.messages.map(function(msg) {
+        msgs: this.messages.filter(function(msg) {
+          return !!msg.body;
+        }).map(function(msg) {
           return {
             from: ''+msg.from,
-            to: ''+msg.to,
             body: ''+msg.body,
             ts: +msg.dateTime
           };
@@ -283,9 +285,12 @@ angular.module( 'jabberService', [   ] )
     }
     
     svc.joinRoom = function(room) {
+      var historyRequest = { maxstanzas: "250" };
+      if (room.lastReceived > 0)
+        historyRequest = { since: new Date(room.lastReceived+1) };
       svc.client.joinRoom(room.jid, svc.client.jid.local, {
         joinMuc: {
-          history: { maxstanzas: "250", since: new Date(room.lastReceived) }
+          history: historyRequest
         }
       });
     }
