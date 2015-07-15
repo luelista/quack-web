@@ -112,7 +112,7 @@ angular.module( 'jabberService', [   ] )
         return deferred.promise;
       }
       var jid = new XMPP.JID(svc.jid);
-      if (XMPP_ALLOWED_HOSTS.indexOf(jid.host) === -1) {
+      if (XMPP_ALLOWED_HOSTS.indexOf(jid.domain) === -1) {
         deferred.reject("Only Jabber accounts from these servers are allowed: "+XMPP_ALLOWED_HOSTS.join(', '));
         return deferred.promise;
       }
