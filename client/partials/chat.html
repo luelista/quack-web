@@ -32,7 +32,7 @@
       <md-list-item class="md-3-line" ng-repeat="message in chat.messages">
           <img ng-src="/images/person.jpg" class="md-avatar" alt="{{message.from}}">
           <div class="md-list-item-text" ng-if="message.body">
-            <span style="float:right">{{message.dateTime}}</span>
+            <span class="date">{{message.dateTime | date: "HH:mm:ss"}}</span>
             <h3>{{message.from.resource}}</h3>
             <p>
               {{message.body}}
@@ -41,7 +41,7 @@
           <div class="md-list-item-text" ng-if="message.subject">
             <p>*** {{message.from.resource}} set the subject to: <b>{{message.subject}}</b></p>
           </div>
-          
+
       </md-list-item>
     </md-list>
   </md-content>
