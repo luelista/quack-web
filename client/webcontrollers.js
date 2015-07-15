@@ -1,8 +1,4 @@
 
-// Include app dependency on ngMaterial
-var XMPP_WEBSOCKET_SERVICE = 'wss://teamwiki.de:5281/xmpp-websocket/';
-
-
 angular.module( 'bonfireControllers', [  ] )
 
 .controller("SidebarCtrl",

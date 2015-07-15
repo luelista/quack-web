@@ -1,5 +1,4 @@
 
-// Include app dependency on ngMaterial
 
 angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', 'jabberService' ] )
 .config(function($mdThemingProvider) {

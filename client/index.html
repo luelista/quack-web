@@ -28,10 +28,15 @@
     <script src="/webcontrollers.js"></script>
     <script src="/jabberservice.js"></script>
     <script>
-    //for debugging
+    
+    // config
+    var XMPP_WEBSOCKET_SERVICE = 'wss://teamwiki.de:5281/xmpp-websocket/';
+    var XMPP_ALLOWED_HOSTS = ['teamwiki.de'];
+
+    // for debugging
     window.addEventListener("load",function(){
-window.DD=angular.element(document.body).injector()
-},false);
+      window.DD=angular.element(document.body).injector()
+    },false);
     </script>
 
 </body>

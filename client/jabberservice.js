@@ -111,6 +111,11 @@ angular.module( 'jabberService', [   ] )
         deferred.reject("Invalid Jabber ID");
         return deferred.promise;
       }
+      var jid = new XMPP.JID(svc.jid);
+      if (XMPP_ALLOWED_HOSTS.indexOf(jid.host) === -1) {
+        deferred.reject("Only Jabber accounts from these servers are allowed: "+XMPP_ALLOWED_HOSTS.join(', '));
+        return deferred.promise;
+      }
       if (svc.client && svc.connected) {
         deferred.resolve();
         return deferred.promise;
