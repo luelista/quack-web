@@ -241,7 +241,7 @@ angular.module( 'jabberService', [   ] )
                 var occ;
                 if (msg.type != "groupchat") {
                   chat.chatState = msg.chatState;
-                } else if (occ = chat.occupants[msg.from.resource]) {
+                } else if (occ = chat.occupants[msg.from.resource]) {
                   occ.chatState = msg.chatState;
                 }
               }
