@@ -129,7 +129,10 @@ angular.module( 'chatControllers', [  ] )
           var result = JSON.parse(xhr.responseText);
           var url = FILE_UPLOAD_API_ENDPOINT+'/'+result.hash+'.jpg';
           scope.$apply(function() {
-            element[0].value += url;
+            var val = element.val();
+            if(val) val +=" ";
+            element.val(val + url);
+            element.triggerHandler('input');
           });
         } else {
           console.log('Nope');
