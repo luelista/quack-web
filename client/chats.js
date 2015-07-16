@@ -97,7 +97,26 @@ angular.module( 'chatControllers', [  ] )
       }
     });
 
+    element.on('dragenter', noopHandler);
+    element.on('dragexit', noopHandler);
+    element.on('dragover', noopHandler);
+    element.on('drop', drop);
+
+    function noopHandler(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    function drop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var files = e.dataTransfer.files;
+        if (files && files[0]) {
+          submitFileForm(files[0], "drop");
+        }
+    }
     function submitFileForm(file, type) {
+      console.log(file);
       var formData = new FormData();
       formData.append('file', file, 'file.jpg');
       formData.append('submission-type', type);
