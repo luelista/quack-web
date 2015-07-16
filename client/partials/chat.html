@@ -1,12 +1,12 @@
 
 
-<md-toolbar class=" md-accent ">
+<md-toolbar class=" md-accent chat-header">
   <div class="md-toolbar-tools">
     <md-button class="md-icon-button" hide-gt-sm aria-label="Sidebar" ng-click="toggleSideBar()">
       <md-icon>menu</md-icon>
     </md-button>
     <h2>
-      <span>{{jid}}</span>
+      <span><strong>{{chat.jid.local}}</strong>@{{chat.jid.domain}}</span><small>{{chat.subject}}</small>
     </h2>
     <span flex></span>
     <md-button class="md-icon-button" aria-label="More" ng-click="rename()">
@@ -27,7 +27,9 @@
 </md-toolbar>
 
 <div class="occupants" flex=0>
-  <span ng-repeat="(nick,occupant) in chat.occupants" title="{{occupant.jid.toString()}}">
+  <span ng-repeat="(nick,occupant) in chat.occupants"
+        title="{{occupant.jid.toString()}}"
+        ng-class="occupant.chatState">
     {{occupant.nick}}
   </span>
   <!--<md-chips>
@@ -55,6 +57,9 @@
 
       </md-list-item>
     </md-list>
+    <div class="typing-notice" ng-repeat="occupant in chat.occupants" ng-if="occupant.chatState=='composing'">
+      {{occupant.nick}} is typing a message...
+    </div>
   </md-content>
 </div>
 

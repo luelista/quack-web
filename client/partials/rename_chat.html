@@ -1,0 +1,27 @@
+<md-dialog aria-label="Change Password" style="width: 500px">
+  <form>
+  <md-dialog-content>
+    <form>
+    <md-input-container>
+      <label>Alias (only visible for you)</label>
+      <input ng-model="chat_name" focus-me type="text">
+    </md-input-container>
+    <md-input-container>
+      <label>Subject (visible for all occupants)</label>
+      <input ng-model="subject" focus-me type="text">
+    </md-input-container>
+    <!-- bogus submit button for enter key handling -->
+    <input type="submit" hide ng-click="ok()">
+    </form>
+  </md-dialog-content>
+  <div class="md-actions" layout="row">
+    <span flex></span>
+    <md-button ng-click="cancel()" type="button" class="">
+     Cancel
+    </md-button>
+    <md-button ng-click="ok()" class="md-primary md-raised">
+      OK
+    </md-button>
+  </div>
+  </form>
+</md-dialog>

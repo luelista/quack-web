@@ -110,6 +110,7 @@ angular.module( 'jabberService', [   ] )
       this.role = null;
       this.affiliation = null;
       this.jid = null;
+      this.chatState = "";
       for(var k in obj) this[k] = obj[k];
     }
     svc.Occupant = Occupant;
@@ -193,12 +194,15 @@ angular.module( 'jabberService', [   ] )
       });
       client.on('message', function(msg) {
         $rootScope.$apply(function() {
-          $rootScope.$broadcast('jabber.message', msg);
+          var id = msg.from.bare, chat = svc.conferences[id];
+          $rootScope.$broadcast('jabber.message', msg, chat);
           if (msg.type == "groupchat") {
-            var id = msg.from.bare, chat;
-            if (chat = svc.conferences[id]) {
+            if (chat) {
               if (msg.chatState) {
-
+                var occ; console.log("chatState", msg.from.resource, msg.chatState);
+                if (occ = chat.occupants[msg.from.resource]) { console.log("oc",occ)
+                  occ.chatState = msg.chatState;
+                }
               }
               if (msg.body || msg.subject) {
                 if (msg.tstamp && msg.tstamp.tstamp && msg.tstamp.tstamp instanceof Date)
@@ -208,6 +212,9 @@ angular.module( 'jabberService', [   ] )
                 else
                   msg.dateTime = new Date();
                 chat.lastReceived = msg.dateTime;
+                console.log($rootScope.focused ,chat.currentViewed)
+                if ($rootScope.focused && chat.currentViewed)
+                  chat.lastRead = msg.dateTime;
                 chat.messages.push(msg);
                 chat.persist();
               }

@@ -1,6 +1,8 @@
 
 
-angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', 'jabberService', 'colorHelper' ] )
+angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers',
+                                'chatControllers', 'accountControllers',
+                                'jabberService', 'colorHelper' ] )
 .config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default')
     .primaryPalette('teal')
@@ -25,10 +27,33 @@ angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', '
       }
     });
 
-    $rootScope.$on('jabber.message', function(event, msg) {
+    $rootScope.focused = true;
+    window.onblur = function() {
+      $rootScope.focused = false;
+    }
+    window.onfocus = function() {
+      $rootScope.focused = true;
+    }
+
+    $rootScope.$on('jabber.message', function(event, msg, chat) {
       console.log("Message: ",msg.delay?"delayed":"NEW",msg);
-      if (!msg.delay && msg.body)
-        $mdToast.showSimple(""+msg.from+": "+msg.body);
+      if (!msg.delay && msg.body) {
+
+        if (!$rootScope.focused && window.localStorage.notificationsEnabled == "true" && Notification.permission === "granted") {
+          var body = msg.body;
+          if (msg.type == "groupchat") body=msg.from.resource+": "+body;
+          var notification = new Notification(msg.from.local,{body:body,icon:'/images/person.jpg', dir:'auto'});
+          notification.onclick=function() {
+            $rootScope.$apply(function() {
+              $location.path('/chat/' + msg.from.bare);
+              window.focus();
+            });
+          }
+        } else {
+          if (!chat.currentViewed)
+            $mdToast.showSimple(""+msg.from+": "+msg.body);
+        }
+      }
     });
 
     $rootScope.toggleSideBar = function() {
@@ -50,6 +75,10 @@ angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers', '
       when('/chat/:chatId', {
         templateUrl: 'partials/chat.html',
         controller: 'ChatCtrl'
+      }).
+      when('/preferences', {
+        templateUrl: 'partials/preferences.html',
+        controller: 'PreferencesCtrl'
       }).
       otherwise({
         redirectTo: '/login'
