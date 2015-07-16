@@ -47,9 +47,7 @@
           <div class="md-list-item-text" ng-if="message.body">
             <span class="date">{{message.dateTime | date: "HH:mm:ss"}}</span>
             <h3>{{message.from.resource}}</h3>
-            <p>
-              {{message.body}}
-            </p>
+            <p ng-bind-html="message.body | formatMessage"></p>
           </div>
           <div class="md-list-item-text" ng-if="message.subject">
             <p>*** {{message.from.resource}} set the subject to: <b>{{message.subject}}</b></p>

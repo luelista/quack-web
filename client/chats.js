@@ -113,6 +113,30 @@ angular.module( 'chatControllers', [  ] )
   };
 }])
 
+.filter('formatMessage', function($sce) {
+    var urls = /(\b(https?|ftp):\/\/[A-Z0-9+&@#\/%?=~_|!:,.;-]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    var image_urls = /(\b(https?):\/\/[A-Z0-9+&@#\/%?=~_|!:,.;-]*[-A-Z0-9+&@#\/%=~_|]\.(jpg|png|gif|webp))/gim;
+    var emails = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim
+    var tags = /</g;
+    var wrap = /\n/g;
+
+    return function(text) {
+        text = text.replace(tags, '&lt;');
+        text = text.replace(wrap, '\n<br>');
+
+        if(text.match(urls)) {
+            text = text.replace(urls, "<a href=\"$1\" target=\"_blank\">$1</a>")
+        }
+        if(text.match(emails)) {
+            text = text.replace(emails, "<a href=\"mailto:$1\">$1</a>")
+        }
+        var match;
+        if (match = text.match(image_urls)) {
+          text += "<div><img src='"+match[0]+"' class='img-preview'></div>";
+        }
+        return $sce.trustAsHtml(text);
+    }
+})
 
 ;
 
@@ -131,4 +155,41 @@ function RenameChatController($scope, $mdDialog, Jabber, chat) {
     chat.persist();
     $mdDialog.hide();
   }
+}
+
+
+
+document.onpaste = function(e){
+var items = e.clipboardData.items;
+console.log(JSON.stringify(items));
+if (e.clipboardData.items[0].kind === 'file') {
+        // get the blob
+        var imageFile = items[0].getAsFile();
+        console.log(imageFile);
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            console.log(event.target.result); // data url!
+            submitFileForm(event.target.result, 'paste');
+        };
+        reader.readAsBinaryString(imageFile);
+    }
+};
+
+function submitFileForm(file, type) {
+var formData = new FormData();
+var myBlob = new Blob([file], { "type" : "image/png"} );
+formData.append('file', myBlob, 'file.jpg');
+formData.append('submission-type', type);
+
+var xhr = new XMLHttpRequest();
+xhr.open('POST', 'https://chat2.teamwiki.de/api/upload/file');
+xhr.onload = function () {
+    if (xhr.status == 200) {
+        console.log('all done: ');
+    } else {
+        console.log('Nope');
+    }
+};
+
+xhr.send(formData);
 }

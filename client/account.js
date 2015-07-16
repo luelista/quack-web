@@ -10,6 +10,7 @@ angular.module( 'accountControllers', [  ] )
     }
 
     $scope.login = function() {
+      $mdToast.showSimple("Logging in, please wait ...");
       Jabber.connect()
       .then(function() {
         var s = $location.search();
