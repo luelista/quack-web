@@ -17,10 +17,9 @@ angular.module( 'chatControllers', [  ] )
 
     $scope.sendMessage = function() {
       console.log($scope.chat.composing);
-      Jabber.client.sendMessage({
-        body: $scope.chat.composing,
-        to: $scope.chat.jid,
-        type: "groupchat"
+      if ($scope.chat.composing == "") return;
+      $scope.chat.sendMessage({
+        body: $scope.chat.composing
       });
       $scope.chat.composing = "";
     }
@@ -83,6 +82,52 @@ angular.module( 'chatControllers', [  ] )
   };
 }])
 
+.directive('pasteImage', [ function() {
+
+  function link(scope, element, attrs) {
+
+    element.on('paste', function(e){
+      var items = e.clipboardData.items;
+      console.log(JSON.stringify(items));
+      if (e.clipboardData.items[0].kind === 'file') {
+        // get the blob
+        var imageFile = items[0].getAsFile();
+        console.log(imageFile);
+        submitFileForm(imageFile, 'paste');
+      }
+    });
+
+    function submitFileForm(file, type) {
+      var formData = new FormData();
+      formData.append('file', file, 'file.jpg');
+      formData.append('submission-type', type);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', FILE_UPLOAD_API_ENDPOINT+'/api/upload/file');
+      xhr.onload = function () {
+        if (xhr.status == 200) {
+          console.log('all done: ');
+          var result = JSON.parse(xhr.responseText);
+          var url = FILE_UPLOAD_API_ENDPOINT+'/'+result.hash+'.jpg';
+          scope.$apply(function() {
+            element[0].value += url;
+          });
+        } else {
+          console.log('Nope');
+        }
+      };
+
+      xhr.send(formData);
+    }
+
+  }
+
+  return {
+    //scope: { onSendMessage: '&' },
+    link: link
+  };
+}])
+
 // maybe replace with https://github.com/Luegg/angularjs-scroll-glue/blob/master/src/scrollglue.js#L62
 .directive('scrollDown', ['$interval',function($interval) {
   return {
@@ -132,7 +177,7 @@ angular.module( 'chatControllers', [  ] )
         }
         var match;
         if (match = text.match(image_urls)) {
-          text += "<div><img src='"+match[0]+"' class='img-preview'></div>";
+          text += "<div><img src='"+match[0]+"' class='img-preview loading' onload='this.className=\"img-preview\"' onerror='this.parentNode.innerHTML=\"\"'></div>";
         }
         return $sce.trustAsHtml(text);
     }
@@ -155,41 +200,4 @@ function RenameChatController($scope, $mdDialog, Jabber, chat) {
     chat.persist();
     $mdDialog.hide();
   }
-}
-
-
-
-document.onpaste = function(e){
-var items = e.clipboardData.items;
-console.log(JSON.stringify(items));
-if (e.clipboardData.items[0].kind === 'file') {
-        // get the blob
-        var imageFile = items[0].getAsFile();
-        console.log(imageFile);
-        var reader = new FileReader();
-        reader.onload = function(event) {
-            console.log(event.target.result); // data url!
-            submitFileForm(event.target.result, 'paste');
-        };
-        reader.readAsBinaryString(imageFile);
-    }
-};
-
-function submitFileForm(file, type) {
-var formData = new FormData();
-var myBlob = new Blob([file], { "type" : "image/png"} );
-formData.append('file', myBlob, 'file.jpg');
-formData.append('submission-type', type);
-
-var xhr = new XMLHttpRequest();
-xhr.open('POST', 'https://chat2.teamwiki.de/api/upload/file');
-xhr.onload = function () {
-    if (xhr.status == 200) {
-        console.log('all done: ');
-    } else {
-        console.log('Nope');
-    }
-};
-
-xhr.send(formData);
 }

@@ -9,6 +9,7 @@ angular.module( 'jabberService', [   ] )
       password: null,
       client: null,
       connected: false,
+      openChats: [],
       conferences: {},
       contacts: [],
       avatars: {}
@@ -25,6 +26,7 @@ angular.module( 'jabberService', [   ] )
     // class Conversation
     function Conversation(obj) {
       this.jid = null;
+      this.type = "groupchat";
       this.subject = null;
       this.name = null;
       this.online = false;
@@ -38,7 +40,7 @@ angular.module( 'jabberService', [   ] )
       try {
         var stored = JSON.parse(window.localStorage["conversation_info_" + this.jid.bare]);
         if (stored && typeof stored == "object") {
-          for(var k in stored) this[k] = stored[k];
+          for(var k in stored)if(k!="jid") this[k] = stored[k];
           for(var i in stored.msgs) {
             var msg = stored.msgs[i];
             //console.log("message from localStorage:",msg);
@@ -59,13 +61,22 @@ angular.module( 'jabberService', [   ] )
     }
     Conversation.prototype.persist = function() {
       this.unread = 0;
-      for(var i = this.messages.length - 1; i >= 0; i--) {
-        if(this.messages[i].dateTime <= this.lastRead) break;
-        if(this.messages[i].body) this.unread++;
+      var date = "";
+      for(var i = 0; i < this.messages.length; i++) {
+        if ((this.messages[i].dateTime > this.lastRead) && (this.messages[i].body)) this.unread++;
+        var d = new Date(this.messages[i].dateTime);
+        var e = d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();
+        if (date != e) {
+          this.messages[i].header = true;
+          date = e;
+        } else {
+          this.messages[i].header = false;
+        }
       }
       window.localStorage["conversation_info_" + this.jid.bare] =
       JSON.stringify({
         name: this.name,
+        type: this.type,
         lastRead: +this.lastRead,
         lastReceived: +this.lastReceived,
         msgs: this.messages.filter(function(msg) {
@@ -79,7 +90,28 @@ angular.module( 'jabberService', [   ] )
         })
       });
     }
-
+    Conversation.prototype.insertMessage = function(msg) {
+      if (msg.id) {
+        for(var i in this.messages) {
+          if (this.messages[i].id == msg.id) {
+            this.messages[i] = msg;
+            return;
+          }
+        }
+      }
+      this.messages.push(msg);
+    }
+    Conversation.prototype.sendMessage = function(msg) {
+      msg.from = svc.client.jid;
+      msg.to = this.jid;
+      msg.type = this.type;
+      msg.id = uuid();
+      if (msg.type == "groupchat") msg.sending = true;
+      msg.dateTime = new Date();
+      svc.client.sendMessage(msg);
+      this.messages.push(msg);
+      this.persist();
+    }
     Conversation.prototype.unbookmark = function() {
       svc.client.removeBookmark(this.jid, function(ok) {
         console.log(ok);
@@ -196,11 +228,20 @@ angular.module( 'jabberService', [   ] )
         $rootScope.$apply(function() {
           var id = msg.from.bare, chat = svc.conferences[id];
           $rootScope.$broadcast('jabber.message', msg, chat);
-          if (msg.type == "groupchat") {
+          if (msg.type == "error") {
+            console.log("Error:", msg.error);
+          } else if (msg.type == "groupchat" ||msg.type == "chat" || !msg.type) {
+            if (msg.type != "groupchat" && !chat) {
+              var contact = svc.getContact(id), fullName = contact ? contact.name : null;
+              chat = new Conversation({ jid: new XMPP.JID(msg.from.bare), type: 'chat', name: fullName });
+              svc.conferences[id] = chat;
+            }
             if (chat) {
               if (msg.chatState) {
-                var occ; console.log("chatState", msg.from.resource, msg.chatState);
-                if (occ = chat.occupants[msg.from.resource]) { console.log("oc",occ)
+                var occ;
+                if (msg.type != "groupchat") {
+                  chat.chatState = msg.chatState;
+                } else if (occ = chat.occupants[msg.from.resource]) {
                   occ.chatState = msg.chatState;
                 }
               }
@@ -215,10 +256,11 @@ angular.module( 'jabberService', [   ] )
                 console.log($rootScope.focused ,chat.currentViewed)
                 if ($rootScope.focused && chat.currentViewed)
                   chat.lastRead = msg.dateTime;
-                chat.messages.push(msg);
+                chat.insertMessage(msg);
                 chat.persist();
               }
             }
+
           }
         });
       });
@@ -229,7 +271,7 @@ angular.module( 'jabberService', [   ] )
         });
       });
       function onMucEvent(item, callback) {
-        var id = item.from.bare, chat;
+        var id = item.from ? item.from.bare : '', chat;
         if (chat = svc.conferences[id]) {
           $rootScope.$apply(function() {
             callback(id, chat);
@@ -310,7 +352,7 @@ angular.module( 'jabberService', [   ] )
           var old = svc.conferences;
           svc.conferences = {};
           var conferences = resp.privateStorage.bookmarks.conferences;
-          if (!conferences) return;
+          if (!conferences) conferences = [];
           conferences.forEach(function(item) {
             var id = item.jid.bare;
             //console.log(JSON.stringify(item));
@@ -320,10 +362,22 @@ angular.module( 'jabberService', [   ] )
               svc.conferences[id] = new Conversation(item);
             }
           });
+          angular.forEach(window.localStorage, function(value, key) {
+            if (key.indexOf("conversation_info_") !== 0) return;
+            try { value = JSON.parse(value); } catch(ex) { return; }
+            if (value.type != "chat") return;
+            var id = key.substr(18);
+            value.jid = new XMPP.JID(id);
+            if (!svc.conferences[id]) svc.conferences[id] = new Conversation(value);
+          });
           $rootScope.$broadcast('jabber.conversationsChange');
           resolve();
         });
       });
+    }
+
+    svc.getContact = function(jid) {
+      return svc.contacts.filter(function(x) { return x.jid.bare == jid; })[0];
     }
 
     svc.disconnect = function() {
@@ -343,5 +397,13 @@ angular.module( 'jabberService', [   ] )
       });
     }
 
+
     return svc;
   } );
+
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+}

@@ -42,25 +42,32 @@
 <div flex layout="row">
   <md-content scroll-down flex>
     <md-list layout-padding class="messages">
-      <md-list-item class="md-3-line" ng-repeat="message in chat.messages" ng-if="$index > skipItemCount">
-          <div class="md-avatar" style="background-color: {{message.from.resource|pastel_colour}}" title="{{message.from}}">{{message.from.resource|first_letter}}</div>
-          <div class="md-list-item-text" ng-if="message.body">
-            <span class="date">{{message.dateTime | date: "HH:mm:ss"}}</span>
-            <h3>{{message.from.resource}}</h3>
-            <p ng-bind-html="message.body | formatMessage"></p>
-          </div>
-          <div class="md-list-item-text" ng-if="message.subject">
-            <p>*** {{message.from.resource}} set the subject to: <b>{{message.subject}}</b></p>
-          </div>
-
+      <md-list-item class="sub-header-line" ng-repeat-start="message in chat.messages" ng-if="$index >= skipItemCount && message.header">
+        {{message.dateTime | date: "EEE, dd.MM.yyyy"}}
+      </md-list-item>
+      <md-list-item class="md-3-line" ng-repeat-end ng-if="$index >= skipItemCount">
+        <div class="md-avatar" style="background-color: {{message.from.resource|pastel_colour}}" title="{{message.from}}">{{message.from.resource|first_letter}}</div>
+        <div class="md-list-item-text" ng-if="message.body">
+          <span class="date" ng-if="message.sending">Sending ...</span>
+          <span class="date" ng-if="!message.sending">{{message.dateTime | date: "HH:mm:ss"}}</span>
+          <h3 ng-if="chat.type=='chat'">{{message.from.local}}<span>@{{message.from.domain}}/{{message.from.resource}}</h3>
+          <h3 ng-if="chat.type!='chat'">{{message.from.resource}}</h3>
+          <p ng-bind-html="message.body | formatMessage"></p>
+        </div>
+        <div class="md-list-item-text" ng-if="message.subject">
+          <p>*** {{message.from.resource}} set the subject to: <b>{{message.subject}}</b></p>
+        </div>
       </md-list-item>
     </md-list>
     <div class="typing-notice" ng-repeat="occupant in chat.occupants" ng-if="occupant.chatState=='composing'">
       {{occupant.nick}} is typing a message...
     </div>
+    <div class="typing-notice" ng-if="chat.chatState=='composing'">
+      {{chat.name}} is typing a message...
+    </div>
   </md-content>
 </div>
 
 <div class="send-message">
-    <textarea ng-model="chat.composing" chat-write-message on-send-message="sendMessage()"></textarea>
+    <textarea ng-model="chat.composing" chat-write-message paste-image on-send-message="sendMessage()"></textarea>
 </div>

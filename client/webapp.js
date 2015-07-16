@@ -2,7 +2,7 @@
 
 angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers',
                                 'chatControllers', 'accountControllers',
-                                'jabberService', 'colorHelper' ] )
+                                'jabberService', 'colorHelper', 'ui.sortable' ] )
 .config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default')
     .primaryPalette('teal')

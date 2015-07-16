@@ -64,7 +64,7 @@ angular.module( 'bonfireControllers', [  ] )
 
 
 .controller("WelcomeCtrl",
-  function($scope, Jabber) {
+  function($scope, Jabber, $location) {
     $scope.contacts = Jabber.contacts;
 
     $scope.joinJid = "";
@@ -76,6 +76,13 @@ angular.module( 'bonfireControllers', [  ] )
       Jabber.joinRoom(room);
       room.bookmark();
     };
+
+    $scope.startConversation = function(contact) {
+      var room = new Jabber.Conversation({ jid: contact.jid,  name: contact.name, type: "chat" });
+      Jabber.conferences[contact.jid.bare] = room;
+      room.bookmark();
+      $location.path("/chat/" + contact.jid.bare);
+    }
   })
 
 

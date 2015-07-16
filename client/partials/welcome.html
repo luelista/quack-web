@@ -18,12 +18,12 @@
         <h2 class="md-title">Contacts</h2>
         <md-content style="height:300px"  >
         <div ng-repeat="contact in contacts">
-          <a href="#">{{ contact.jid.bare }}</a>
+          <a href="#" ng-click="startConversation(contact)">{{ contact.jid.bare }}</a>
         </div>
       </md-content>
       </md-card-content>
       <div class="md-actions" layout style="border-top: 1px solid #eee; padding: 1px 15px 3px">
-        
+
         <md-button>Add contact</md-button>
       </div>
     </md-card>
@@ -48,8 +48,8 @@
       <md-card-content>
         <h2 class="md-title">Use Bonfire As Your IRC Bouncer</h2>
         <p>
-          Bonfire Web can connect to your favorite IRC servers on your behalf 
-          and keep the connection open while you are away. This allows you to 
+          Bonfire Web can connect to your favorite IRC servers on your behalf
+          and keep the connection open while you are away. This allows you to
           read the backlog from all your devices.
         </p>
       </md-card-content>

@@ -36,12 +36,15 @@ ul.side-menu li a.active md-icon { color: rgba(0,0,0,0.6); }
 
 .messages { word-wrap: break-word; }
 .messages md-list-item .md-list-item-text h3 { font-size: 10pt;  font-weight: bold; }
+.messages md-list-item .md-list-item-text h3 span { font-weight: normal; color: #888; }
 .messages md-list-item .md-list-item-text p { font-size: 10pt; line-height: 1.4; font-weight: normal; }
 .messages .date { float: right; font-size: 9pt; color: #999999; }
 .messages md-list-item .md-avatar { margin-top: 10px !important; border-radius: 0; font-size: 25pt; text-align: center; color: #fff; font-family:"Courier New",monospace; }
 .messages .md-list-item-text { padding: 10px 0 !important; }
 .typing-notice { font-size: 10pt; color: #000; background: #FFFF8D; padding: 10px 15px; font-style: italic; font-weight: bold; }
-.messages .img-preview { max-width: 250px; max-height: 160px; border: 1px solid #ccc; box-shadow: 1px 1px 4px #ddd; padding: 2px; }
+.messages .img-preview { max-width: 250px; max-height: 160px; border: 1px solid #ccc; box-shadow: 1px 1px 4px #ddd; padding: 2px; transition: width 1s; }
+.messages .img-preview.loading { height: 160px; width: 250px; background: #eee url(/images/load.gif) no-repeat center center; }
+.messages md-list-item.sub-header-line { background: -webkit-linear-gradient(90deg, #ffffff 50%, #ebebeb 100%); margin-top: 5px; border-top: 1px solid #aaa; color: #444; }
 
 .login-form { max-width: 400px; margin-bottom: 50px; }
 .login-form form { padding: 20px 30px 30px; background: white; }

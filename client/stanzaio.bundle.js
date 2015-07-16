@@ -2711,7 +2711,7 @@ module.exports = function (client, stanzas) {
                 self.send(new Auth(auth));
             });
         }
-        
+
         self.send(new Auth(auth));
     });
 
@@ -3634,7 +3634,7 @@ Mechanism.prototype.response = function(cred) {
     str += ',nc=' + nc;
     str += ',qop=' + qop;
     str += ',digest-uri="' + uri + '"';
-  
+
     var base = createHash('md5').update(cred.username)
                                 .update(':')
                                 .update(realm)
@@ -3654,16 +3654,16 @@ Mechanism.prototype.response = function(cred) {
     }
 
     ha1 = ha1.digest('hex');
-  
+
     var ha2 = createHash('md5').update('AUTHENTICATE:')
                                .update(uri);
-    
+
     if (qop === 'auth-int' || qop === 'auth-conf') {
         ha2.update(':00000000000000000000000000000000');
     }
 
     ha2 = ha2.digest('hex');
-  
+
     var digest = createHash('md5').update(ha1)
                                   .update(':')
                                   .update(this._nonce)
@@ -3678,14 +3678,14 @@ Mechanism.prototype.response = function(cred) {
                                   .digest('hex');
 
     str += ',response=' + digest;
-  
+
     if (this._charset === 'utf-8') {
         str += ',charset=utf-8';
     }
     if (cred.authzid) {
         str += 'authzid="' + cred.authzid + '"';
     }
-  
+
     return str;
 };
 
@@ -6212,19 +6212,19 @@ function oldBrowser() {
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 Petka Antonov
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:</p>
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -6232,7 +6232,7 @@ function oldBrowser() {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- * 
+ *
  */
 /**
  * bluebird build version 2.9.33
@@ -6304,7 +6304,7 @@ Async.prototype.haveItemsQueued = function () {
 Async.prototype.throwLater = function(fn, arg) {
     if (arguments.length === 1) {
         arg = fn;
-        fn = function () { throw arg; };
+        fn = function () { throw arg+"\n"+arg.stack; };
     }
     if (typeof setTimeout !== "undefined") {
         setTimeout(function() {
@@ -8294,7 +8294,7 @@ function errorAdapter(reason, nodeback) {
     }
 }
 
-Promise.prototype.asCallback = 
+Promise.prototype.asCallback =
 Promise.prototype.nodeify = function (nodeback, options) {
     if (typeof nodeback == "function") {
         var adapter = successAdapter;
@@ -9104,30 +9104,30 @@ _dereq_('./any.js')(Promise);
 _dereq_('./each.js')(Promise, INTERNAL);
 _dereq_('./timers.js')(Promise, INTERNAL);
 _dereq_('./filter.js')(Promise, INTERNAL);
-                                                         
-    util.toFastProperties(Promise);                                          
-    util.toFastProperties(Promise.prototype);                                
-    function fillTypes(value) {                                              
-        var p = new Promise(INTERNAL);                                       
-        p._fulfillmentHandler0 = value;                                      
-        p._rejectionHandler0 = value;                                        
-        p._progressHandler0 = value;                                         
-        p._promise0 = value;                                                 
-        p._receiver0 = value;                                                
-        p._settledValue = value;                                             
-    }                                                                        
-    // Complete slack tracking, opt out of field-type tracking and           
-    // stabilize map                                                         
-    fillTypes({a: 1});                                                       
-    fillTypes({b: 2});                                                       
-    fillTypes({c: 3});                                                       
-    fillTypes(1);                                                            
-    fillTypes(function(){});                                                 
-    fillTypes(undefined);                                                    
-    fillTypes(false);                                                        
-    fillTypes(new Promise(INTERNAL));                                        
-    CapturedTrace.setBounds(async.firstLineError, util.lastLineError);       
-    return Promise;                                                          
+
+    util.toFastProperties(Promise);
+    util.toFastProperties(Promise.prototype);
+    function fillTypes(value) {
+        var p = new Promise(INTERNAL);
+        p._fulfillmentHandler0 = value;
+        p._rejectionHandler0 = value;
+        p._progressHandler0 = value;
+        p._promise0 = value;
+        p._receiver0 = value;
+        p._settledValue = value;
+    }
+    // Complete slack tracking, opt out of field-type tracking and
+    // stabilize map
+    fillTypes({a: 1});
+    fillTypes({b: 2});
+    fillTypes({c: 3});
+    fillTypes(1);
+    fillTypes(function(){});
+    fillTypes(undefined);
+    fillTypes(false);
+    fillTypes(new Promise(INTERNAL));
+    CapturedTrace.setBounds(async.firstLineError, util.lastLineError);
+    return Promise;
 
 };
 
@@ -16564,17 +16564,17 @@ module.exports = function (registry) {
         get: function () {
             var results = {};
             var props = jxt.find(this.xml, NS, 'Property');
-    
+
             for (var i = 0, len = props.length; i < len; i++) {
                 var property = props[i];
                 var type = jxt.getAttribute(property, 'type');
                 results[type] = property.textContent;
             }
-    
+
             return results;
         }
     };
-    
+
     var XRD = registry.define({
         name: 'xrd',
         namespace: NS,
@@ -16586,8 +16586,8 @@ module.exports = function (registry) {
             properties: Properties
         }
     });
-    
-    
+
+
     var Link = registry.define({
         name: '_xrdlink',
         namespace: NS,
@@ -16601,7 +16601,7 @@ module.exports = function (registry) {
             properties: Properties
         }
     });
-    
+
     registry.extend(XRD, Link, 'links');
 
     return XRD;
@@ -17202,14 +17202,14 @@ function intersect (a, b) {
 intersect.big = function(a, b) {
   var ret = [];
   var temp = {};
-  
+
   for (var i = 0; i < b.length; i++) {
     temp[b[i]] = true;
   }
   for (var i = 0; i < a.length; i++) {
     if (temp[a[i]]) ret.push(a[i]);
   }
-  
+
   return ret;
 }
 
@@ -17446,7 +17446,7 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
         var self = this;
 
         this.state = 'active';
-        
+
         changes.contents[0].description = {
             descType: 'datachannel'
         };
@@ -21361,7 +21361,7 @@ function PeerConnection(config, constraints) {
     // EXPERIMENTAL FLAG, might get removed without notice
     this.enableChromeNativeSimulcast = false;
     if (constraints && constraints.optional &&
-            adapter.webrtcDetectedBrowser === 'chrome' && 
+            adapter.webrtcDetectedBrowser === 'chrome' &&
             navigator.appVersion.match(/Chromium\//) === null) {
         constraints.optional.forEach(function (constraint, idx) {
             if (constraint.enableChromeNativeSimulcast) {
@@ -23865,7 +23865,7 @@ JingleSession.prototype = extend(JingleSession.prototype, {
         message = this.sid + ': ' + message;
         this.emit('log:' + level, message);
     },
-    
+
     send: function (action, data) {
         data = data || {};
         data.sid = this.sid;
@@ -23898,7 +23898,7 @@ JingleSession.prototype = extend(JingleSession.prototype, {
             jingle: data
         });
     },
-    
+
     process: function (action, changes, cb) {
         this.processingQueue.push({
             action: action,
@@ -23906,25 +23906,25 @@ JingleSession.prototype = extend(JingleSession.prototype, {
             cb: cb
         });
     },
-    
+
     start: function () {
         this._log('error', 'Can not start base sessions');
         this.end('unsupported-applications', true);
     },
-    
+
     accept: function () {
         this._log('error', 'Can not accept base sessions');
         this.end('unsupported-applications');
     },
-    
+
     cancel: function () {
         this.end('cancel');
     },
-    
+
     decline: function () {
         this.end('decline');
     },
-    
+
     end: function (reason, silent) {
         this.state = 'ended';
 
@@ -23939,13 +23939,13 @@ JingleSession.prototype = extend(JingleSession.prototype, {
                 condition: reason
             };
         }
-    
+
         if (!silent) {
             this.send('session-terminate', {
                 reason: reason
             });
         }
-    
+
         this.emit('terminated', this, reason);
     },
 
@@ -23954,7 +23954,7 @@ JingleSession.prototype = extend(JingleSession.prototype, {
         cb();
     },
 
-    // It is mandatory to reply to a session-info action with 
+    // It is mandatory to reply to a session-info action with
     // an unsupported-info error if the info isn't recognized.
     //
     // However, a session-info action with no associated payload
@@ -23985,7 +23985,7 @@ JingleSession.prototype = extend(JingleSession.prototype, {
         }
     },
 
-    // It is mandatory to reply to a description-info action with 
+    // It is mandatory to reply to a description-info action with
     // an unsupported-info error if the info isn't recognized.
     onDescriptionInfo: function (changes, cb) {
         cb({
@@ -23995,7 +23995,7 @@ JingleSession.prototype = extend(JingleSession.prototype, {
         });
     },
 
-    // It is mandatory to reply to a transport-info action with 
+    // It is mandatory to reply to a transport-info action with
     // an unsupported-info error if the info isn't recognized.
     onTransportInfo: function (changes, cb) {
         cb({
@@ -27271,7 +27271,7 @@ exports['default'] = function (JXT) {
 
                     var hist = Utils.createElement(_xmppConstants.Namespace.MUC, 'history', _xmppConstants.Namespace.MUC);
                     this.xml.appendChild(hist);
-                    
+
                     if (opts.maxchars) {
                       hist.setAttribute('maxchars', '' + opts.maxchars);
                     }
@@ -32768,10 +32768,10 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
    */
   function Mechanism() {
   }
-  
+
   Mechanism.prototype.name = 'ANONYMOUS';
   Mechanism.prototype.clientFirst = true;
-  
+
   /**
    * Encode a response using optional trace information.
    *
@@ -32784,7 +32784,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
   Mechanism.prototype.response = function(cred) {
     return cred.trace || '';
   };
-  
+
   /**
    * Decode a challenge issued by the server.
    *
@@ -32795,7 +32795,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
   };
 
   exports = module.exports = Mechanism;
-  
+
 }));
 
 },{}],"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/sasl-anonymous/main.js":[function(require,module,exports){
@@ -32815,7 +32815,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
 
   exports = module.exports = Mechanism;
   exports.Mechanism = Mechanism;
-  
+
 }));
 
 },{"./lib/mechanism":"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/sasl-anonymous/lib/mechanism.js"}],"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/sasl-external/lib/mechanism.js":[function(require,module,exports){
@@ -32835,7 +32835,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
    * This class implements the EXTERNAL SASL mechanism.
    *
    * The EXTERNAL SASL mechanism provides support for authentication using
-   * credentials established by external means. 
+   * credentials established by external means.
    *
    * References:
    *  - [RFC 4422](http://tools.ietf.org/html/rfc4422)
@@ -32844,10 +32844,10 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
    */
   function Mechanism() {
   }
-  
+
   Mechanism.prototype.name = 'EXTERNAL';
   Mechanism.prototype.clientFirst = true;
-  
+
   /**
    * Encode a response using given credential.
    *
@@ -32860,7 +32860,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
   Mechanism.prototype.response = function(cred) {
     return cred.authzid || '';
   };
-  
+
   /**
    * Decode a challenge issued by the server.
    *
@@ -32871,7 +32871,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
   };
 
   exports = module.exports = Mechanism;
-  
+
 }));
 
 },{}],"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/sasl-external/main.js":[function(require,module,exports){
@@ -32894,7 +32894,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
    *
    * The PLAIN SASL mechanism provides support for exchanging a clear-text
    * username and password.  This mechanism should not be used without adequate
-   * security provided by an underlying transport layer. 
+   * security provided by an underlying transport layer.
    *
    * References:
    *  - [RFC 4616](http://tools.ietf.org/html/rfc4616)
@@ -32903,10 +32903,10 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
    */
   function Mechanism() {
   }
-  
+
   Mechanism.prototype.name = 'PLAIN';
   Mechanism.prototype.clientFirst = true;
-  
+
   /**
    * Encode a response using given credential.
    *
@@ -32927,7 +32927,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
     str += cred.password;
     return str;
   };
-  
+
   /**
    * Decode a challenge issued by the server.
    *
@@ -32940,7 +32940,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
   };
 
   exports = module.exports = Mechanism;
-  
+
 }));
 
 },{}],"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/sasl-plain/main.js":[function(require,module,exports){
@@ -33196,7 +33196,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
     define(['exports', 'module'], factory);
   }
 }(this, function(exports, module) {
-  
+
   /**
    * `Factory` constructor.
    *
@@ -33205,7 +33205,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
   function Factory() {
     this._mechs = [];
   }
-  
+
   /**
    * Utilize the given `mech` with optional `name`, overridding the mechanism's
    * default name.
@@ -33229,7 +33229,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
     this._mechs.push({ name: name, mech: mech });
     return this;
   };
-  
+
   /**
    * Create a new mechanism from supported list of `mechs`.
    *
@@ -33256,7 +33256,7 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
   };
 
   exports = module.exports = Factory;
-  
+
 }));
 
 },{}],"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/saslmechanisms/main.js":[function(require,module,exports){
@@ -33273,10 +33273,10 @@ arguments[4]["/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_mo
             './lib/factory'], factory);
   }
 }(this, function(exports, module, Factory) {
-  
+
   exports = module.exports = Factory;
   exports.Factory = Factory;
-  
+
 }));
 
 },{"./lib/factory":"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/saslmechanisms/lib/factory.js"}],"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/uuid/rng-browser.js":[function(require,module,exports){
@@ -33501,7 +33501,7 @@ module.exports = uuid;
 
 },{"./rng":"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/uuid/rng-browser.js"}],"/home/mw/Projektarchive/bonfire-web/node_modules/stanza.io/node_modules/wildemitter/wildemitter.js":[function(require,module,exports){
 /*
-WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based 
+WildEmitter.js is a slim little event emitter by @henrikjoreteg largely based
 on @visionmedia's Emitter from UI Kit.
 
 Why? I wanted it standalone.
@@ -33509,14 +33509,14 @@ Why? I wanted it standalone.
 I also wanted support for wildcard emitters like this:
 
 emitter.on('*', function (eventName, other, event, payloads) {
-    
+
 });
 
 emitter.on('somenamespace*', function (eventName, payloads) {
-    
+
 });
 
-Please note that callbacks triggered by wildcard registered events also get 
+Please note that callbacks triggered by wildcard registered events also get
 the event name as the first argument.
 */
 module.exports = WildEmitter;
@@ -33681,7 +33681,7 @@ function createXHR(options, callback) {
 
         return body
     }
-    
+
     var failureResponse = {
                 body: undefined,
                 headers: {},
@@ -33690,7 +33690,7 @@ function createXHR(options, callback) {
                 url: uri,
                 rawRequest: xhr
             }
-    
+
     function errorFunc(evt) {
         clearTimeout(timeoutTimer)
         if(!(evt instanceof Error)){
@@ -33703,11 +33703,11 @@ function createXHR(options, callback) {
     // will load the data & process the response in a special response object
     function loadFunc() {
         clearTimeout(timeoutTimer)
-        
+
         var status = (xhr.status === 1223 ? 204 : xhr.status)
         var response = failureResponse
         var err = null
-        
+
         if (status !== 0){
             response = {
                 body: getBody(),
@@ -33724,9 +33724,9 @@ function createXHR(options, callback) {
             err = new Error("Internal XMLHttpRequest Error")
         }
         callback(err, response, response.body)
-        
+
     }
-    
+
     if (typeof options === "string") {
         options = { uri: options }
     }
@@ -33800,8 +33800,8 @@ function createXHR(options, callback) {
     if ("responseType" in options) {
         xhr.responseType = options.responseType
     }
-    
-    if ("beforeSend" in options && 
+
+    if ("beforeSend" in options &&
         typeof options.beforeSend === "function"
     ) {
         options.beforeSend(xhr)
@@ -33867,7 +33867,7 @@ function forEach(list, iterator, context) {
     if (arguments.length < 3) {
         context = this
     }
-    
+
     if (toString.call(list) === '[object Array]')
         forEachArray(list, iterator, context)
     else if (typeof list === 'string')
