@@ -79,6 +79,7 @@ angular.module( 'jabberService', [   ] )
         type: this.type,
         lastRead: +this.lastRead,
         lastReceived: +this.lastReceived,
+        notify: this.notify,
         msgs: this.messages.filter(function(msg) {
           return !!msg.body;
         }).map(function(msg) {
@@ -132,6 +133,11 @@ angular.module( 'jabberService', [   ] )
       svc.client.leaveRoom(this.jid.bare, this.nick, function(ok) {
         console.log("leave?",ok);
       });
+    }
+    Conversation.prototype.markAsRead = function() {
+      this.lastRead = this.lastReceived;
+      this.persist();
+      if (this.notification) this.notification.close();
     }
     svc.Conversation = Conversation;
     // end class Conversation
@@ -227,7 +233,6 @@ angular.module( 'jabberService', [   ] )
       client.on('message', function(msg) {
         $rootScope.$apply(function() {
           var id = msg.from.bare, chat = svc.conferences[id];
-          $rootScope.$broadcast('jabber.message', msg, chat);
           if (msg.type == "error") {
             console.log("Error:", msg.error);
           } else if (msg.type == "groupchat" ||msg.type == "chat" || !msg.type) {
@@ -246,11 +251,12 @@ angular.module( 'jabberService', [   ] )
                 }
               }
               if (msg.body || msg.subject) {
-                if (msg.tstamp && msg.tstamp.tstamp && msg.tstamp.tstamp instanceof Date)
-                  msg.dateTime = msg.tstamp.tstamp;
-                else if (msg.delay && msg.delay.stamp && msg.delay.stamp instanceof Date)
+                console.log("msg.delay:", msg.delay, msg.tstamp);
+                if (msg.delay && msg.delay.stamp && msg.delay.stamp instanceof Date) {
                   msg.dateTime = msg.delay.stamp;
-                else
+                } else if (msg.tstamp && msg.tstamp.tstamp && msg.tstamp.tstamp instanceof Date) {
+                  msg.dateTime = msg.tstamp.tstamp;
+                } else
                   msg.dateTime = new Date();
                 chat.lastReceived = msg.dateTime;
                 console.log($rootScope.focused ,chat.currentViewed)
@@ -260,8 +266,8 @@ angular.module( 'jabberService', [   ] )
                 chat.persist();
               }
             }
-
-          }
+          } //endif msg.type
+          $rootScope.$broadcast('jabber.message', msg, chat);
         });
       });
       client.on('avatar', function(avatar) {
@@ -397,6 +403,12 @@ angular.module( 'jabberService', [   ] )
       });
     }
 
+    svc.getCurrentViewedConference = function() {
+      for(var i in svc.conferences) {
+        if (svc.conferences[i].currentViewed) return svc.conferences[i];
+      }
+      return null;
+    }
 
     return svc;
   } );

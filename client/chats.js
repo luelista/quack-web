@@ -29,7 +29,10 @@ angular.module( 'chatControllers', [  ] )
     $scope.$on("reachedtop", function() {
       $scope.skipItemCount = Math.max(0, $scope.skipItemCount - 25);
     });
-
+    $scope.setNotify = function(mode) {
+      $scope.chat.notify = mode;
+      $scope.chat.persist();
+    }
     $scope.goOnline = function() {
       Jabber.joinRoom($scope.chat);
       $scope.chat.autoJoin = true;

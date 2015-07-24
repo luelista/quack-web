@@ -50,7 +50,7 @@
         <li><h2 class="menu-heading md-subhead">Conversations</h2></li>
         <li ng-repeat="conv in conversations">
           <a ng-href="#/chat/{{conv.jid.bare | escape}}" ng-class="{active:conv.currentViewed}">
-            <md-icon ng-style="{color:conv.unread>0?'red':''}">chat{{conv.online ? '' : '_bubble_outline'}}</md-icon>
+            <md-icon ng-style="{color:conv.unread>0?'red':''}">{{conv.type == 'chat' ? 'person' : conv.online ? 'chat' : 'chat_bubble_outline'}}</md-icon>
             <span>{{conv.name ? conv.name : conv.subject ? conv.subject : conv.jid.bare}}</span></a>
         </li>
       </ul>

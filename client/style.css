@@ -24,11 +24,15 @@ ul.side-menu li a.active md-icon { color: rgba(0,0,0,0.6); }
 .send-message textarea { width: 98%; padding-left: 1%; }
 .send-message { background-color: #fafafa; border-top: 1px solid #e0e0e0; min-height: 50px }
 
-.occupants {_height:50px; padding: 3px 20px; background:#eee}
+.occupants { background: #eee; }
+.occupants .content { max-height: 50px; padding: 3px 70px 3px 20px; overflow: hidden; }
+.occupants .btn {  float: right; }
+.occupants.open .content { max-height: inherit; }
 .occupants span { padding: 3px 5px; display: inline-block; background: #e0e0e0; margin: 2px 5px; font-size: 9pt; }
 .occupants .composing { background-color: #FDD835; }
 .occupants .paused { background-color: #FFF176; }
 .occupants .active { color: #3F51B5; }
+
 
 .chat-header h2 span { display: block; color: #90CAF9; }
 .chat-header h2 span strong { color: white; }

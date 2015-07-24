@@ -12,26 +12,62 @@
     <md-button class="md-icon-button" aria-label="More" ng-click="rename()">
       <md-icon>edit</md-icon>
     </md-button>
-    <md-button class="md-icon-button" aria-label="Favorite" ng-click="goOnline()" ng-hide="chat.online">
+    <md-button class="md-icon-button" aria-label="Favorite" ng-click="goOnline()" ng-show="!chat.online && chat.type=='groupchat'">
       <md-icon>chat_bubble_outline</md-icon>
       <md-tooltip>Join This Conference</md-tooltip>
     </md-button>
-    <md-button class="md-icon-button" aria-label="Favorite" ng-click="goOffline()" ng-show="chat.online">
+    <md-button class="md-icon-button" aria-label="Favorite" ng-click="goOffline()" ng-show="chat.online && chat.type=='groupchat'">
       <md-icon>chat</md-icon>
       <md-tooltip>Leave Conference</md-tooltip>
     </md-button>
-    <md-button class="md-icon-button" aria-label="More" ng-click="delete()">
-      <md-icon>delete</md-icon>
-    </md-button>
+
+
+    <md-menu md-position-mode="target-right target">
+      <md-button aria-label="" class="md-icon-button " ng-click="$mdOpenMenu()">
+        <md-icon md-menu-origin>more_vert</md-icon>
+      </md-button>
+      <md-menu-content width="4">
+        <md-menu-item>
+          <md-button ng-click="setNotify('always')">
+            <md-icon md-menu-align-target>{{ !chat.notify||chat.notify=='always' ? 'check' : ''}}</md-icon>
+            Always notify
+          </md-button>
+        </md-menu-item>
+        <md-menu-item>
+          <md-button ng-click="setNotify('mention')">
+            <md-icon md-menu-align-target>{{ chat.notify=='mention' ? 'check' : ''}}</md-icon>
+            On mention
+          </md-button>
+        </md-menu-item>
+        <md-menu-item>
+          <md-button ng-click="setNotify('never')">
+            <md-icon md-menu-align-target>{{ chat.notify=='never' ? 'check' : ''}}</md-icon>
+            Never notify
+          </md-button>
+        </md-menu-item>
+        <md-menu-item>
+          <md-button ng-click="delete()">
+            <md-icon md-menu-align-target>delete</md-icon>
+            Delete
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+
+
   </div>
 </md-toolbar>
 
-<div class="occupants" flex=0>
-  <span ng-repeat="(nick,occupant) in chat.occupants"
-        title="{{occupant.jid.toString()}}"
-        ng-class="occupant.chatState">
-    {{occupant.nick}}
-  </span>
+<div ng-class="{occupants:true, open:occupants_expanded}" flex=0>
+  <md-button class="md-icon-button btn" ng-click="occupants_expanded=!occupants_expanded;">
+    <md-icon>expand_{{ occupants_expanded ? 'less' : 'more' }}</md-icon></md-button>
+  <div class="content">
+    <span ng-repeat="(nick,occupant) in chat.occupants"
+          title="{{occupant.jid.toString()}}"
+          ng-class="occupant.chatState">
+      {{occupant.nick}}
+    </span>
+  </div>
   <!--<md-chips>
     <md-chip ng-repeat="(nick,occupant) in chat.occupants" title="{{occupant.jid}}">
       {{occupant.nick}}
