@@ -75,8 +75,7 @@
   </md-chips>  -->
 </div>
 
-<div flex layout="row">
-  <md-content scroll-down flex>
+  <md-content scroll-down style="overflow:auto;height:0;" flex>
     <md-list layout-padding class="messages">
       <md-list-item class="sub-header-line" ng-repeat-start="message in chat.messages" ng-if="$index >= skipItemCount && message.header">
         {{message.dateTime | date: "EEE, dd.MM.yyyy"}}
@@ -102,7 +101,6 @@
       {{chat.name}} is typing a message...
     </div>
   </md-content>
-</div>
 
 <div class="send-message">
     <textarea ng-model="chat.composing" chat-write-message paste-image on-send-message="sendMessage()"></textarea>
