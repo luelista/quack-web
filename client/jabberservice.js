@@ -101,6 +101,7 @@ angular.module( 'jabberService', [   ] )
         }
       }
       this.messages.push(msg);
+      if (msg.dateTime > this.lastReceived) this.lastReceived = msg.dateTime;
     }
     Conversation.prototype.sendMessage = function(msg) {
       msg.from = svc.client.jid;
@@ -110,7 +111,7 @@ angular.module( 'jabberService', [   ] )
       if (msg.type == "groupchat") msg.sending = true;
       msg.dateTime = new Date();
       svc.client.sendMessage(msg);
-      this.messages.push(msg);
+      this.insertMessage(msg);
       this.persist();
     }
     Conversation.prototype.unbookmark = function() {
@@ -258,7 +259,6 @@ angular.module( 'jabberService', [   ] )
                   msg.dateTime = msg.tstamp.tstamp;
                 } else
                   msg.dateTime = new Date();
-                chat.lastReceived = msg.dateTime;
                 console.log($rootScope.focused ,chat.currentViewed)
                 if ($rootScope.focused && chat.currentViewed)
                   chat.lastRead = msg.dateTime;

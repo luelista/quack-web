@@ -1,5 +1,5 @@
 
-angular.module( 'bonfireControllers', [  ] )
+angular.module( 'quackControllers', [  ] )
 
 .controller("SidebarCtrl",
   function($rootScope, $scope, $mdDialog, Jabber, $location) {

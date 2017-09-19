@@ -1,6 +1,6 @@
 
 
-angular.module( 'bonfireApp', [ 'ngRoute', 'ngMaterial', 'bonfireControllers',
+angular.module( 'quackApp', [ 'ngRoute', 'ngMaterial', 'quackControllers',
                                 'chatControllers', 'accountControllers',
                                 'jabberService', 'colorHelper', 'ui.sortable' ] )
 .config(function($mdThemingProvider) {
