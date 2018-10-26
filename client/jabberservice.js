@@ -181,7 +181,7 @@ angular.module( 'jabberService', [   ] )
         jid: svc.jid,
         password: svc.password,
         wsURL: XMPP_WEBSOCKET_SERVICE,
-        transports: ["old-websocket"]
+        transports: ["websocket"]
       });
 
       (function(JXT) {
