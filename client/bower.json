@@ -16,9 +16,12 @@
     "tests"
   ],
   "dependencies": {
-    "angular-route": "~1.4.2",
+    "angular-route": "~1.7",
     "angular-material": "~0.10.0",
     "strophejs": "~1.2.2",
     "angular-ui-sortable": "~0.13.4"
+  },
+  "resolutions": {
+    "angular": "1.7.5"
   }
 }
