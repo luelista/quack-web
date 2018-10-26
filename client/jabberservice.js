@@ -175,7 +175,7 @@ angular.module( 'jabberService', [   ] )
         return deferred.promise;
       }
 
-      console.log(svc.jid);
+      console.log("Connecting with JID ",svc.jid);
 
       var client = svc.client = XMPP.createClient({
         jid: svc.jid,
@@ -209,7 +209,7 @@ angular.module( 'jabberService', [   ] )
         });
       });
       client.on('stream:data', function(err) {
-        //console.log("Stream data", err);
+        console.log("Stream data", err);
       });
       client.on('auth:failed', function(err) {
         $rootScope.$apply(function() {
