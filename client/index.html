@@ -19,6 +19,7 @@
 
     <div layout="column" tabIndex="-1" role="main" flex ng-view></div>
 
+    <script src="/config.js"></script>
     <script src="/vendor.min.js"></script>
     <script src="/webapp.js"></script>
     <script src="/webcontrollers.js"></script>
@@ -27,12 +28,6 @@
     <script src="/account.js"></script>
     <script src="/colors.js"></script>
     <script>
-
-    // config
-    var XMPP_WEBSOCKET_SERVICE = 'wss://teamwiki.de:5281/xmpp-websocket/';
-    var XMPP_ALLOWED_HOSTS = ['teamwiki.de'];
-    var XMPP_REGISTER_FORM = 'https://teamwiki.de:5281/register_web';
-    var FILE_UPLOAD_API_ENDPOINT = 'https://chat2.teamwiki.de';
 
     // for debugging
     window.addEventListener("load",function(){
